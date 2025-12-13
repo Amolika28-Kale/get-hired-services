@@ -1,4 +1,4 @@
-import { CheckCircle, MapPin, Mail, Phone, Clock, DollarSign, Briefcase, Users, RefreshCw, Star, BarChart, HardHat, FileText, Search, Zap } from 'lucide-react';
+import { CheckCircle, MapPin, Mail, Phone, Clock, DollarSign, Briefcase, Users, RefreshCw, Star, BarChart, HardHat, FileText, Search, Zap, Menu } from 'lucide-react';
 import React, { useState } from 'react';
 
 // Icons for use in the Services/Why Choose sections
@@ -167,35 +167,47 @@ const [menuOpen, setMenuOpen] = useState(false);
     </a>
   ))}
 </nav>
-
-{/* Mobile Menu Button */}
+{/* mobile view */}
 <button
-  className="lg:hidden"
-  onClick={() => setMenuOpen(!menuOpen)}
+  type="button"
+  className="lg:hidden z-50 relative cursor-pointer"
+  onClick={() => setMenuOpen(prev => !prev)}
 >
-  ☰
+  <Menu size={28} />
 </button>
 
 
-<a href="#register">
+<a href="#register" className="hidden lg:block">
   <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
     Register Now
   </button>
 </a>
+
         </div>
       </header>
 {menuOpen && (
-  <div className="lg:hidden bg-white shadow-md px-6 py-4 space-y-4">
+  <div className="lg:hidden bg-white shadow-md px-6 py-6 space-y-4">
     {['Home','Services','Process','Why Us','Contact'].map(i => (
       <a
         key={i}
         href={`#${i.toLowerCase().replace(' ', '-')}`}
-        className="block"
+        className="block text-lg"
         onClick={() => setMenuOpen(false)}
       >
         {i}
       </a>
     ))}
+
+    {/* Mobile CTA */}
+    <a
+      href="#register"
+      onClick={() => setMenuOpen(false)}
+      className="block"
+    >
+      <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-xl font-semibold">
+        Register Now
+      </button>
+    </a>
   </div>
 )}
 
