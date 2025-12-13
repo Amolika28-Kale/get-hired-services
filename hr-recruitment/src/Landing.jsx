@@ -688,11 +688,12 @@ const [success, setSuccess] = useState(false);
     <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
       <p>© 2025 Get Hired Services LLP. All rights reserved.</p>
 
-      <div className="flex gap-6">
-        <a href="#" className="hover:text-white transition">Privacy Policy</a>
-        <a href="#" className="hover:text-white transition">Terms of Service</a>
-        <a href="#" className="hover:text-white transition">Refund Policy</a>
-      </div>
+     <div className="flex gap-6">
+  <button className="hover:text-white transition">Privacy Policy</button>
+  <button className="hover:text-white transition">Terms of Service</button>
+  <button className="hover:text-white transition">Refund Policy</button>
+</div>
+
     </div>
   </div>
 </footer>
