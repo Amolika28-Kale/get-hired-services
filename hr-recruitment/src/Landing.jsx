@@ -53,6 +53,7 @@ const Card = ({ title, description, icon: Icon, stats = null }) => (
 );
 export default function Landing() {
 const [success, setSuccess] = useState(false);
+const [menuOpen, setMenuOpen] = useState(false);
 
       const [formData, setFormData] = useState({
         
@@ -79,7 +80,7 @@ const [success, setSuccess] = useState(false);
     setLoading(true);
 
     try {
-      const res = await fetch("https://get-hired-services.onrender.com//api/register", {
+      const res = await fetch("https://get-hired-services.onrender.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -158,24 +159,23 @@ const [success, setSuccess] = useState(false);
              <Briefcase className="text-blue-600" size={30} />
             Get Hired Services<br/> <span className='text-sm font-normal text-slate-500 hidden sm:inline'>Pune</span>
           </div>
-    <nav className="hidden lg:flex gap-8 text-lg">
+{/* Desktop Menu */}
+<nav className="hidden lg:flex gap-8 text-lg">
   {['Home','Services','Process','Why Us','Contact'].map(i => (
- <a
-  key={i}
-  href={`#${i.toLowerCase().replace(' ', '-')}`}
-  className="
-    relative text-black no-underline
-    after:absolute after:left-0 after:-bottom-1
-    after:h-[2px] after:w-0 after:bg-blue-600
-    after:transition-all after:duration-300
-    hover:text-blue-600 hover:after:w-full
-  "
->
-  {i}
-</a>
-
+    <a key={i} href={`#${i.toLowerCase().replace(' ', '-')}`}>
+      {i}
+    </a>
   ))}
 </nav>
+
+{/* Mobile Menu Button */}
+<button
+  className="lg:hidden"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  ☰
+</button>
+
 
 <a href="#register">
   <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
@@ -184,13 +184,27 @@ const [success, setSuccess] = useState(false);
 </a>
         </div>
       </header>
+{menuOpen && (
+  <div className="lg:hidden bg-white shadow-md px-6 py-4 space-y-4">
+    {['Home','Services','Process','Why Us','Contact'].map(i => (
+      <a
+        key={i}
+        href={`#${i.toLowerCase().replace(' ', '-')}`}
+        className="block"
+        onClick={() => setMenuOpen(false)}
+      >
+        {i}
+      </a>
+    ))}
+  </div>
+)}
 
       {/* ================= Hero ================= */}
       <section id="home" className="bg-gradient-to-br from-blue-50 to-yellow-50 py-20">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-6 items-center">
           <div>
             <span className="inline-block bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-medium mb-4">Your Partner in Career Success</span>
-            <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight mt-4">
+<h1 className="text-3xl sm:text-4xl lg:text-6xl">
               Transform Your <span className="text-blue-600">Career Journey</span>
             </h1>
             <p className="mt-6 text-lg text-slate-600 max-w-lg">
