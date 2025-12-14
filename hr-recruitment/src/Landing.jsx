@@ -1,5 +1,6 @@
 import { CheckCircle, MapPin, Mail, Phone, Clock, DollarSign, Briefcase, Users, RefreshCw, Star, BarChart, HardHat, FileText, Search, Zap, Menu } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState, useRef, useEffect } from "react";
+import React from 'react';
 
 // Icons for use in the Services/Why Choose sections
 const iconMap = {
@@ -54,6 +55,8 @@ const Card = ({ title, description, icon: Icon, stats = null }) => (
 export default function Landing() {
 const [success, setSuccess] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
+const [step, setStep] = useState(1);
+const qrRef = useRef(null);
 
 const [formData, setFormData] = useState({
   fullName: "",
@@ -132,6 +135,11 @@ const handleSubmit = async (e) => {
   }
 };
 
+useEffect(() => {
+  if (step === 2 && qrRef.current) {
+    qrRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}, [step]);
 
   const officeAddress = "Office No 306, 3rd Floor, Excella Plazzo, Katraj-Navalle Bridge Road, Pune, Maharashtra";
   const email = "ghspune555@gmail.com ";
@@ -306,7 +314,9 @@ const handleSubmit = async (e) => {
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-3xl p-12 lg:p-16 text-center text-white shadow-2xl">
           <h2 className="text-4xl font-bold">Ready to Take the Next Step?</h2>
           <p className="mt-4 text-xl">Join thousands of successful candidates who found their dream jobs through our services</p>
+          <a href="#register" className="hidden lg:block">
           <button className="mt-8 bg-white text-blue-600 px-10 py-3 rounded-xl text-lg font-semibold hover:bg-slate-50 transition duration-200">Register for Just ₹499</button>
+          </a>
         </div>
       </section>
             <section id="process" className="bg-white py-24">
@@ -426,79 +436,136 @@ const handleSubmit = async (e) => {
       </section>
 
 
-      {/* ================= Registration CTA / Form ================= */}
-<section id="register" className="py-24 bg-blue-50">
-        <h2 className="text-4xl font-bold text-center">Start Your Career Journey</h2>
-        <p className="text-center text-slate-600 mt-4 text-lg">Register now for just ₹499 and get guaranteed interviews</p>
-        
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 mt-16 px-6">
-            {/* Benefits Column */}
-            <div className="bg-gradient-to-br from-blue-600 to-blue-500 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
-                <h3 className="text-3xl font-extrabold mb-6">What You Get</h3>
-                <ul className="space-y-4">
-                    {registrationBenefits.map((benefit) => (
-                        <li key={benefit} className="flex items-start gap-3">
-                            <CheckCircle className="text-white flex-shrink-0 mt-1" size={20}/>
-                            <span className='font-medium text-base'>
-                                {benefit.split(': ')[0]}
-                                <br/>
-                                <span className='text-sm font-normal'>{benefit.split(': ')[1]}</span>
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-                <div className="mt-8 pt-6 border-t border-white/30">
-                    <div className="text-4xl font-extrabold">Registration Fee: <span className="text-yellow-300">₹499</span></div>
-                    <p className="text-sm mt-1">One-time payment. No hidden charges.</p>
-                </div>
-            </div>
-
-            {/* Registration Form Column */}
-<form
-  onSubmit={handleSubmit}
-  className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl space-y-5"
+{/* ================= Registration CTA / Form (Enhanced) ================= */}
+<section
+  id="register"
+  className="relative py-16 md:py-24 bg-gradient-to-b from-blue-50 via-white to-blue-50 overflow-hidden"
 >
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Full Name *</label>
+  {/* Decorative blobs */}
+  <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl" />
+  <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-200/40 rounded-full blur-3xl" />
+
+  <div className="relative max-w-6xl mx-auto px-6">
+    {/* Header */}
+    <div className="text-center max-w-2xl mx-auto">
+      <h2 className="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight">
+        Start Your Career Journey
+      </h2>
+      <p className="mt-4 text-slate-600 text-lg">
+        Register now for just <b>₹499</b> and unlock guaranteed interview opportunities
+      </p>
+    </div>
+
+    <div className="mt-16 grid lg:grid-cols-2 gap-12 items-start">
+      {/* ================= Benefits Column ================= */}
+      <div className="relative bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
+        <div className="absolute inset-0 rounded-3xl ring-1 ring-white/20" />
+        <h3 className="text-3xl font-extrabold mb-6">What You Get</h3>
+
+        <ul className="space-y-4">
+          {registrationBenefits.map((benefit) => (
+            <li key={benefit} className="flex items-start gap-3">
+              <CheckCircle className="text-white flex-shrink-0 mt-1" size={20} />
+              <span className="font-medium text-base">
+                {benefit.split(': ')[0]}
+                <br />
+                <span className="text-sm font-normal text-white/80">
+                  {benefit.split(': ')[1]}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-10 pt-6 border-t border-white/30">
+          <div className="text-4xl font-extrabold">
+            ₹499 <span className="text-yellow-300 text-xl">One‑time</span>
+          </div>
+          <p className="text-sm mt-1 text-white/80">
+            No hidden charges • Secure payment
+          </p>
+        </div>
+      </div>
+
+      {/* ================= Registration Form Column ================= */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-3xl p-6 md:p-10 shadow-2xl border border-slate-100"
+      >
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+            <span>Details</span>
+            <span>Payment</span>
+            <span>Upload</span>
+          </div>
+          <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-blue-600 transition-all"
+              style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
+            />
+          </div>
+        </div>
+
+        {/* ================= STEP 1 : DETAILS ================= */}
+        {step === 1 && (
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+  {/* Full Name */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Full Name *
+    </label>
     <input
       name="fullName"
+      placeholder="Enter your full name"
       value={formData.fullName}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     />
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Email Address *</label>
+  {/* Email */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Email Address *
+    </label>
     <input
       type="email"
       name="email"
+      placeholder="you@example.com"
       value={formData.email}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     />
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Phone Number *</label>
+  {/* Phone */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Phone Number *
+    </label>
     <input
       name="phone"
+      placeholder="10-digit mobile number"
       value={formData.phone}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     />
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Highest Qualification *</label>
+  {/* Qualification */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Highest Qualification *
+    </label>
     <select
       name="qualification"
       value={formData.qualification}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     >
       <option value="">Select qualification</option>
@@ -510,13 +577,16 @@ const handleSubmit = async (e) => {
     </select>
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Experience *</label>
+  {/* Experience */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Experience *
+    </label>
     <select
       name="experience"
       value={formData.experience}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     >
       <option value="">Select experience</option>
@@ -525,122 +595,216 @@ const handleSubmit = async (e) => {
       <option>1-3 Years</option>
       <option>3-5 Years</option>
       <option>5+ Years</option>
-
     </select>
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Location *</label>
+  {/* Location */}
+  <div className="space-y-1">
+    <label className="text-sm font-semibold text-slate-700">
+      Location *
+    </label>
     <input
       name="location"
+      placeholder="City, State"
       value={formData.location}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     />
   </div>
 
-  <div className="space-y-2">
-    <label className="font-semibold text-sm">Preferred Industry *</label>
+  {/* Industry */}
+  <div className="space-y-1 md:col-span-2">
+    <label className="text-sm font-semibold text-slate-700">
+      Preferred Industry *
+    </label>
     <input
       name="industry"
+      placeholder="IT, Marketing, Finance, etc."
       value={formData.industry}
       onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-lg"
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
       required
     />
   </div>
 
-<div className="space-y-2">
-  <label className="font-semibold text-sm">Upload Resume (PDF/DOC) *</label>
-  <input
-    type="file"
-    accept=".pdf,.doc,.docx"
-    onChange={(e) => setResume(e.target.files[0])}
-    className="w-full border border-slate-300 p-3 rounded-lg"
-    required
-  />
-</div>
-
-
-{/* ===== Payment QR Section ===== */}
-<div className="mb-6 p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
-  <p className="font-semibold text-blue-700 mb-2">
-    Scan & Pay ₹499
-  </p>
-
-  <img
-    src="/images/upi-qr.png"   // 👉 public/images/upi-qr.png
-    alt="UPI QR Code"
-    className="w-44 h-44 mx-auto rounded-xl border bg-white p-2"
-  />
-
-  <p className="text-sm mt-3 text-slate-600">
-    UPI ID: <span className="font-semibold">gethired@upi</span>
-  </p>
-
-  <p className="text-xs text-slate-500 mt-1">
-    Scan the QR, complete payment, then fill the details below
-  </p>
-</div>
-
-<div className="space-y-2">
-  <label className="font-semibold text-sm">
-    Your UPI ID (used for payment) *
-  </label>
-  <input
-    name="upiId"
-    value={formData.upiId}
-    onChange={handleChange}
-    placeholder="yourupi@bank"
-    className="w-full border border-slate-300 p-3 rounded-lg"
-    required
-  />
-</div>
-
-
-<div className="space-y-2">
-  <label className="font-semibold text-sm">
-    Upload Payment Screenshot *
-  </label>
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => setPaymentScreenshot(e.target.files[0])}
-    className="w-full border border-slate-300 p-3 rounded-lg"
-    required
-  />
-  <p className="text-xs text-slate-500">
-    Screenshot must clearly show amount & UPI ID
-  </p>
-</div>
-
-
+  {/* CTA */}
   <button
-    type="submit"
-    disabled={loading}
-    className="w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2"
+    type="button"
+    onClick={() => setStep(2)}
+    className="md:col-span-2 mt-3 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg transition"
   >
-    <Briefcase size={20} />
-    {loading ? "Submitting..." : "Submit Registration"}
+    Continue to Payment →
   </button>
-  {success && (
-  <div className="mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-800 text-center font-semibold">
-    ✅ Registration successful!  
-    <div className="text-sm font-normal mt-1">
-      Our team will contact you soon with further details.
+</div>
+
+        )}
+
+        {/* ================= STEP 2 : PAYMENT ================= */}
+        {step === 2 && (
+          <div
+  ref={qrRef}
+  className="space-y-6 text-center bg-blue-50 border border-blue-200 rounded-3xl p-6 md:p-8"
+>
+  {/* Title */}
+  <h3 className="text-2xl font-bold text-blue-700">
+    Scan & Pay <span className="text-blue-900">₹499</span>
+  </h3>
+
+  <p className="text-sm text-slate-600">
+    Complete the payment using any UPI app
+  </p>
+
+  {/* QR Card */}
+  <div className="bg-white rounded-2xl shadow-md p-4 inline-block">
+    <img
+      src="/images/upi-qr.png"
+      alt="UPI QR Code"
+      className="w-44 h-44 rounded-xl mx-auto"
+    />
+  </div>
+
+  {/* UPI Info */}
+  <div className="text-sm text-slate-700">
+    UPI ID:
+    <span className="ml-1 font-semibold text-slate-900">
+      gethired@upi
+    </span>
+  </div>
+
+  <p className="text-xs text-slate-500">
+    Make sure the UPI ID is visible in your payment screenshot
+  </p>
+
+  {/* UPI Input */}
+  <div className="max-w-sm mx-auto">
+    <label className="block text-left text-sm font-semibold text-slate-700 mb-1">
+      Your UPI ID (used for payment) *
+    </label>
+    <input
+      name="upiId"
+      placeholder="yourupi@bank"
+      value={formData.upiId}
+      onChange={handleChange}
+      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      required
+    />
+  </div>
+
+  {/* Navigation Buttons */}
+  <div className="flex gap-4 pt-2">
+    <button
+      type="button"
+      onClick={() => setStep(1)}
+      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
+    >
+      ← Back
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setStep(3)}
+      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
+    >
+      Next → Upload
+    </button>
+  </div>
+</div>
+
+        )}
+
+        {/* ================= STEP 3 : UPLOAD ================= */}
+        {step === 3 && (
+         <div className="space-y-6">
+  {/* ===== Resume Upload ===== */}
+  <div className="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center hover:border-blue-500 transition">
+    <p className="font-semibold text-slate-700 mb-2">
+      📄 Upload Resume
+    </p>
+    <p className="text-xs text-slate-500 mb-4">
+      PDF, DOC or DOCX (max 2MB)
+    </p>
+
+    <input
+      type="file"
+      accept=".pdf,.doc,.docx"
+      onChange={(e) => setResume(e.target.files[0])}
+      className="w-full text-sm file:mr-4 file:py-2 file:px-4
+        file:rounded-xl file:border-0
+        file:bg-blue-100 file:text-blue-700
+        hover:file:bg-blue-200 cursor-pointer"
+      required
+    />
+  </div>
+
+  {/* ===== Payment Screenshot Upload ===== */}
+  <div className="border-2 border-dashed border-green-200 rounded-2xl p-6 text-center hover:border-green-500 transition">
+    <p className="font-semibold text-slate-700 mb-2">
+      💸 Upload Payment Screenshot
+    </p>
+    <p className="text-xs text-slate-500 mb-4">
+      Must clearly show amount & UPI ID
+    </p>
+
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => setPaymentScreenshot(e.target.files[0])}
+      className="w-full text-sm file:mr-4 file:py-2 file:px-4
+        file:rounded-xl file:border-0
+        file:bg-green-100 file:text-green-700
+        hover:file:bg-green-200 cursor-pointer"
+      required
+    />
+  </div>
+
+  {/* ===== Navigation Buttons ===== */}
+  <div className="flex gap-4 pt-2">
+    <button
+      type="button"
+      onClick={() => setStep(2)}
+      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
+    >
+      ← Back
+    </button>
+
+    <button
+      type="submit"
+      disabled={loading}
+      className={`w-full py-3 rounded-xl font-semibold text-white transition
+        ${loading
+          ? "bg-blue-400 cursor-not-allowed"
+          : "bg-blue-600 hover:bg-blue-700"
+        }`}
+    >
+      {loading ? "Submitting…" : "Submit Registration"}
+    </button>
+  </div>
+</div>
+
+        )}
+
+        {/* ================= SUCCESS ================= */}
+        {success && (
+          <div className="mt-6 text-center">
+            <div className="bg-green-100 border border-green-300 p-4 rounded-xl text-green-800 font-semibold">
+              ✅ Registration Successful
+            </div>
+            <a
+              href={`https://wa.me/91XXXXXXXXXX?text=Hi,%20I%20have%20successfully%20registered%20on%20GetHired`}
+              target="_blank"
+              className="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold"
+            >
+              📲 Confirm on WhatsApp
+            </a>
+          </div>
+        )}
+      </form>
     </div>
   </div>
-)}
+</section>
 
 
-  <p className="text-center text-sm text-slate-500 mt-3">
-    After submission, you'll receive payment instructions via email
-  </p>
-</form>
-
-        </div>
-      </section>
 
 
 
