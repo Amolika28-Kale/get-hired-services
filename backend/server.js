@@ -6,23 +6,29 @@ import path from "path";
 
 dotenv.config();
 
+/* ✅ CREATE APP FIRST */
 const app = express();
-app.use(cors());
 
-// express.json() FILE UPLOAD route साठी use करू नको
+/* ✅ MIDDLEWARES */
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// uploads public
+/* ✅ STATIC FILES */
 app.use("/uploads", express.static("uploads"));
 
-// MongoDB
-mongoose.connect(process.env.MONGO_URI)
+/* ✅ DATABASE */
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));
 
-// Routes
+/* ✅ ROUTES */
 import registerRoute from "./routes/register.js";
 app.use("/api/register", registerRoute);
 
+/* ✅ SERVER */
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
