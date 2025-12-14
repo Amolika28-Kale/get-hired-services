@@ -114,9 +114,9 @@ const [menuOpen, setMenuOpen] = useState(false);
     }
   };
 
-  const officeAddress = "Office No 305, 3rd Floor, Excella Plazzo, Katraj-Navalle Bridge Road, Pune, Maharashtra";
-  const email = "info@gethiredservices.com";
-  const phone = "+91 XXXXX XXXXX"; 
+  const officeAddress = "Office No 306, 3rd Floor, Excella Plazzo, Katraj-Navalle Bridge Road, Pune, Maharashtra";
+  const email = "ghspune555@gmail.com ";
+  const phone = "+91 8530487577"; 
 
   const services = [
     { title: "Recruitment Services", description: "We specialize in identifying and recruiting top talent across various industries, ensuring the perfect match between candidates and organizations." },
@@ -691,19 +691,19 @@ const [menuOpen, setMenuOpen] = useState(false);
         <div className="flex items-start gap-3">
           <MapPin className="text-orange-400 mt-1" size={18} />
           <p>
-            Office No 305, 3rd Floor, Excella Plazzo,
+            Office No 306, 3rd Floor, Excella Plazzo,
             Katraj-Navalle Bridge Road, Pune
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Phone className="text-orange-400" size={18} />
-          <p>+91 XXXXX XXXXX</p>
+          <p>+91 8530487577</p>
         </div>
 
         <div className="flex items-center gap-3">
           <Mail className="text-orange-400" size={18} />
-          <p>info@gethiredservices.com</p>
+          <p>ghspune555@gmail.com </p>
         </div>
       </div>
     </div>
