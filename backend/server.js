@@ -2,14 +2,20 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 
-// MongoDB connect
+// express.json() FILE UPLOAD route साठी use करू नको
+app.use(express.urlencoded({ extended: true }));
+
+// uploads public
+app.use("/uploads", express.static("uploads"));
+
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.error(err));

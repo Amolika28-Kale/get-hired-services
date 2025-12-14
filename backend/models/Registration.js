@@ -8,10 +8,21 @@ const registrationSchema = new mongoose.Schema({
   experience: String,
   location: String,
   industry: String,
+
+  upiId: String,
+
+  resume: {
+    type: String, // file path / filename
+  },
+
+  paymentScreenshot: {
+    type: String,
+  },
+
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 export default mongoose.model("Registration", registrationSchema);
