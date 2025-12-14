@@ -790,13 +790,6 @@ useEffect(() => {
             <div className="bg-green-100 border border-green-300 p-4 rounded-xl text-green-800 font-semibold">
               ✅ Registration Successful
             </div>
-            <a
-              href={`https://wa.me/91XXXXXXXXXX?text=Hi,%20I%20have%20successfully%20registered%20on%20GetHired`}
-              target="_blank"
-              className="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold"
-            >
-              📲 Confirm on WhatsApp
-            </a>
           </div>
         )}
       </form>
