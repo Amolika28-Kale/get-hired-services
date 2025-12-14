@@ -85,23 +85,31 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
 
+  if (!resume || !paymentScreenshot) {
+    alert("Please upload resume and payment screenshot");
+    setLoading(false);
+    return;
+  }
+
   try {
     const data = new FormData();
 
-    // text fields
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
 
-    // files
     data.append("resume", resume);
     data.append("paymentScreenshot", paymentScreenshot);
+
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 20000);
 
     const res = await fetch(
       "https://get-hired-services.onrender.com/api/register",
       {
         method: "POST",
-        body: data, // ❌ NO headers here
+        body: data,
+        signal: controller.signal,
       }
     );
 
@@ -109,7 +117,6 @@ const handleSubmit = async (e) => {
 
     if (res.ok) {
       setSuccess(true);
-
       setFormData({
         fullName: "",
         email: "",
@@ -120,20 +127,23 @@ const handleSubmit = async (e) => {
         industry: "",
         upiId: "",
       });
-
       setResume(null);
       setPaymentScreenshot(null);
-
       setTimeout(() => setSuccess(false), 5000);
     } else {
       alert(result.error || "Something went wrong");
     }
   } catch (err) {
-    alert("Server error");
+    if (err.name === "AbortError") {
+      alert("Server is waking up, please try again");
+    } else {
+      alert("Server error");
+    }
   } finally {
     setLoading(false);
   }
 };
+
 
 useEffect(() => {
   if (step === 2 && qrRef.current) {
@@ -727,6 +737,7 @@ useEffect(() => {
 
     <input
       type="file"
+      name="resume"
       accept=".pdf,.doc,.docx"
       onChange={(e) => setResume(e.target.files[0])}
       className="w-full text-sm file:mr-4 file:py-2 file:px-4
@@ -748,6 +759,7 @@ useEffect(() => {
 
     <input
       type="file"
+      name="paymentScreenshot"
       accept="image/*"
       onChange={(e) => setPaymentScreenshot(e.target.files[0])}
       className="w-full text-sm file:mr-4 file:py-2 file:px-4
