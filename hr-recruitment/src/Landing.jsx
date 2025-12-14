@@ -55,18 +55,21 @@ export default function Landing() {
 const [success, setSuccess] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
 
-      const [formData, setFormData] = useState({
-        
-    fullName: "",
-    email: "",
-    phone: "",
-    qualification: "",
-    experience: "",
-    location: "",
-    industry: "",
-  });
+const [formData, setFormData] = useState({
+  fullName: "",
+  email: "",
+  phone: "",
+  qualification: "",
+  experience: "",
+  location: "",
+  industry: "",
+  upiId: "",
+});
 
-  const [loading, setLoading] = useState(false);
+const [resume, setResume] = useState(null);
+const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) => {
     setFormData({
@@ -75,44 +78,60 @@ const [menuOpen, setMenuOpen] = useState(false);
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const res = await fetch("https://get-hired-services.onrender.com/api/register", {
+  try {
+    const data = new FormData();
+
+    // text fields
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+
+    // files
+    data.append("resume", resume);
+    data.append("paymentScreenshot", paymentScreenshot);
+
+    const res = await fetch(
+      "https://get-hired-services.onrender.com/api/register",
+      {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+        body: data, // ❌ NO headers here
+      }
+    );
 
-      const data = await res.json();
+    const result = await res.json();
 
     if (res.ok) {
-  setSuccess(true);
+      setSuccess(true);
 
-  setFormData({
-    fullName: "",
-    email: "",
-    phone: "",
-    qualification: "",
-    experience: "",
-    location: "",
-    industry: "",
-  });
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        qualification: "",
+        experience: "",
+        location: "",
+        industry: "",
+        upiId: "",
+      });
 
-  // optional: 5 sec नंतर message hide
-  setTimeout(() => setSuccess(false), 5000);
-}
- else {
-        alert(data.message || "Something went wrong");
-      }
-    } catch (err) {
-      alert("Server error");
-    } finally {
-      setLoading(false);
+      setResume(null);
+      setPaymentScreenshot(null);
+
+      setTimeout(() => setSuccess(false), 5000);
+    } else {
+      alert(result.error || "Something went wrong");
     }
-  };
+  } catch (err) {
+    alert("Server error");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const officeAddress = "Office No 306, 3rd Floor, Excella Plazzo, Katraj-Navalle Bridge Road, Pune, Maharashtra";
   const email = "ghspune555@gmail.com ";
@@ -532,6 +551,71 @@ const [menuOpen, setMenuOpen] = useState(false);
     />
   </div>
 
+<div className="space-y-2">
+  <label className="font-semibold text-sm">Upload Resume (PDF/DOC) *</label>
+  <input
+    type="file"
+    accept=".pdf,.doc,.docx"
+    onChange={(e) => setResume(e.target.files[0])}
+    className="w-full border border-slate-300 p-3 rounded-lg"
+    required
+  />
+</div>
+
+
+{/* ===== Payment QR Section ===== */}
+<div className="mb-6 p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+  <p className="font-semibold text-blue-700 mb-2">
+    Scan & Pay ₹499
+  </p>
+
+  <img
+    src="/images/upi-qr.png"   // 👉 public/images/upi-qr.png
+    alt="UPI QR Code"
+    className="w-44 h-44 mx-auto rounded-xl border bg-white p-2"
+  />
+
+  <p className="text-sm mt-3 text-slate-600">
+    UPI ID: <span className="font-semibold">gethired@upi</span>
+  </p>
+
+  <p className="text-xs text-slate-500 mt-1">
+    Scan the QR, complete payment, then fill the details below
+  </p>
+</div>
+
+<div className="space-y-2">
+  <label className="font-semibold text-sm">
+    Your UPI ID (used for payment) *
+  </label>
+  <input
+    name="upiId"
+    value={formData.upiId}
+    onChange={handleChange}
+    placeholder="yourupi@bank"
+    className="w-full border border-slate-300 p-3 rounded-lg"
+    required
+  />
+</div>
+
+
+<div className="space-y-2">
+  <label className="font-semibold text-sm">
+    Upload Payment Screenshot *
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => setPaymentScreenshot(e.target.files[0])}
+    className="w-full border border-slate-300 p-3 rounded-lg"
+    required
+  />
+  <p className="text-xs text-slate-500">
+    Screenshot must clearly show amount & UPI ID
+  </p>
+</div>
+
+
   <button
     type="submit"
     disabled={loading}
@@ -620,9 +704,25 @@ const [menuOpen, setMenuOpen] = useState(false);
             <div className="bg-blue-50 rounded-3xl p-8 shadow-inner">
                 <h3 className='text-2xl font-bold mb-4'>Visit Us</h3>
                 {/* Map Image Placeholder */}
-                <div className="w-full h-72 bg-slate-300 rounded-xl flex items-center justify-center text-slate-600 font-bold mb-4">
-                    [Google Map Image Placeholder]
-                </div>
+              <div className="w-full h-72 rounded-xl overflow-hidden mb-4 shadow-md">
+  <iframe
+    title="Get Hired Services Location"
+    src="https://www.google.com/maps?q=Katraj-Navale%20Bridge,Pune&output=embed"
+    className="w-full h-full border-0"
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  ></iframe>
+</div>
+<a
+  href="https://maps.app.goo.gl/yrxfh2kaeF9uCJky9"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block mt-2 text-blue-600 font-semibold hover:underline"
+>
+  📍 Open in Google Maps
+</a>
+
                 <p className="text-slate-600">
                     Our office is conveniently located near Katraj-Navalle Bridge, easily accessible by public transport and with ample parking facilities available.
                 </p>
