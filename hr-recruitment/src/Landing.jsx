@@ -192,23 +192,30 @@ export default function Landing() {
     <div className="font-sans text-slate-900 bg-white">
 
       {/* ================= Navbar ================= */}
-{/* ================= Navbar ================= */}
 <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
   <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
 
-    {/* Logo */}
-    <div className="flex items-center gap-2 font-extrabold text-xl sm:text-2xl">
-      <Briefcase className="text-blue-600" size={30} />
-      <span>
-        Get Hired Services
-        <span className="block text-xs font-normal text-slate-500">
-          Pune
-        </span>
+{/* Logo */}
+<a
+  href="#home"
+  onClick={() => setMenuOpen(false)}
+  className="no-underline hover:no-underline"
+>
+  <div className="flex items-center gap-2 font-extrabold text-xl sm:text-2xl cursor-pointer">
+    <Briefcase className="text-blue-600" size={30} />
+    <div className="leading-tight text-slate-900">
+      Get Hired Services
+      <span className="block text-xs font-normal text-slate-500">
+        Pune
       </span>
     </div>
+  </div>
+</a>
+
+
 
     {/* Desktop Menu */}
-    <nav className="hidden lg:flex gap-8 text-base font-medium text-slate-700">
+    <nav className="hidden lg:flex gap-8 text-base font-medium text-slate-700 ">
       {["Home", "Services", "Process", "Why Us", "Contact"].map(i => (
         <a
           key={i}
@@ -216,7 +223,7 @@ export default function Landing() {
           className="relative hover:text-blue-600 transition
                      after:absolute after:left-0 after:-bottom-1
                      after:w-0 after:h-[2px] after:bg-blue-600
-                     hover:after:w-full after:transition-all"
+                     hover:after:w-full after:transition-all no-underline hover:no-underline"
         >
           {i}
         </a>
@@ -251,7 +258,7 @@ export default function Landing() {
           <a
             key={i}
             href={`#${i.toLowerCase().replace(" ", "-")}`}
-            className="block text-slate-700 hover:text-blue-600 transition"
+            className="block text-slate-700 hover:text-blue-600 transition no-underline hover:no-underline"
             onClick={() => setMenuOpen(false)}
           >
             {i}
