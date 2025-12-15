@@ -1,6 +1,7 @@
-import { CheckCircle, MapPin, Mail, Phone, Clock, DollarSign, Briefcase, Users, RefreshCw, Star, BarChart, HardHat, FileText, Search, Zap, Menu } from 'lucide-react';
+import { CheckCircle, MapPin, Mail, Phone, Clock, DollarSign, Briefcase, Users, RefreshCw, Star, BarChart, HardHat, FileText, Search, Zap, Menu, X } from 'lucide-react';
 import { useState, useRef, useEffect } from "react";
 import React from 'react';
+import FloatingElements from './components/FloatingElements';
 
 // Icons for use in the Services/Why Choose sections
 const iconMap = {
@@ -13,23 +14,24 @@ const iconMap = {
   'Expert Guidance & Support': BarChart,
   'Strong Industry Connections': Users,
   'Proven Track Record': RefreshCw,
-  'Personalized Approach': Phone, 
+  'Personalized Approach': Phone,
 };
 
 // Placeholder for image assets
 const assets = {
-  hero: './hero.png', 
+  hero: './hero.png',
   user: FileText,
-  document: FileText, 
+  document: FileText,
   search: Search,
-  chat: Zap, 
-  bag: Briefcase, 
+  chat: Zap,
+  bag: Briefcase,
 };
 
 // Helper component for Service/Why Choose cards
 const Card = ({ title, description, icon: Icon, stats = null }) => (
   <div className="
-    bg-white rounded-2xl shadow-lg p-8
+  bg-white rounded-3xl p-8
+  shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)]
     transition-all duration-300 ease-out
     hover:-translate-y-2 hover:shadow-2xl
     hover:scale-[1.02]
@@ -53,25 +55,25 @@ const Card = ({ title, description, icon: Icon, stats = null }) => (
   </div>
 );
 export default function Landing() {
-const [success, setSuccess] = useState(false);
-const [menuOpen, setMenuOpen] = useState(false);
-const [step, setStep] = useState(1);
-const qrRef = useRef(null);
+  const [success, setSuccess] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const qrRef = useRef(null);
 
-const [formData, setFormData] = useState({
-  fullName: "",
-  email: "",
-  phone: "",
-  qualification: "",
-  experience: "",
-  location: "",
-  industry: "",
-  upiId: "",
-});
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    qualification: "",
+    experience: "",
+    location: "",
+    industry: "",
+    upiId: "",
+  });
 
-const [resume, setResume] = useState(null);
-const [paymentScreenshot, setPaymentScreenshot] = useState(null);
-const [loading, setLoading] = useState(false);
+  const [resume, setResume] = useState(null);
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
   const handleChange = (e) => {
@@ -81,79 +83,79 @@ const [loading, setLoading] = useState(false);
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  if (!resume || !paymentScreenshot) {
-    alert("Please upload resume and payment screenshot");
-    setLoading(false);
-    return;
-  }
+    if (!resume || !paymentScreenshot) {
+      alert("Please upload resume and payment screenshot");
+      setLoading(false);
+      return;
+    }
 
-  try {
-    const data = new FormData();
+    try {
+      const data = new FormData();
 
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    data.append("resume", resume);
-    data.append("paymentScreenshot", paymentScreenshot);
-
-    const controller = new AbortController();
-    setTimeout(() => controller.abort(), 20000);
-
-    const res = await fetch(
-      "https://get-hired-services.onrender.com/api/register",
-      {
-        method: "POST",
-        body: data,
-        signal: controller.signal,
-      }
-    );
-
-    const result = await res.json();
-
-    if (res.ok) {
-      setSuccess(true);
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        qualification: "",
-        experience: "",
-        location: "",
-        industry: "",
-        upiId: "",
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
       });
-      setResume(null);
-      setPaymentScreenshot(null);
-      setTimeout(() => setSuccess(false), 5000);
-    } else {
-      alert(result.error || "Something went wrong");
+
+      data.append("resume", resume);
+      data.append("paymentScreenshot", paymentScreenshot);
+
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 20000);
+
+      const res = await fetch(
+        "https://get-hired-services.onrender.com/api/register",
+        {
+          method: "POST",
+          body: data,
+          signal: controller.signal,
+        }
+      );
+
+      const result = await res.json();
+
+      if (res.ok) {
+        setSuccess(true);
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          qualification: "",
+          experience: "",
+          location: "",
+          industry: "",
+          upiId: "",
+        });
+        setResume(null);
+        setPaymentScreenshot(null);
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        alert(result.error || "Something went wrong");
+      }
+    } catch (err) {
+      if (err.name === "AbortError") {
+        alert("Server is waking up, please try again");
+      } else {
+        alert("Server error");
+      }
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    if (err.name === "AbortError") {
-      alert("Server is waking up, please try again");
-    } else {
-      alert("Server error");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
-useEffect(() => {
-  if (step === 2 && qrRef.current) {
-    qrRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-}, [step]);
+  useEffect(() => {
+    if (step === 2 && qrRef.current) {
+      qrRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [step]);
 
   const officeAddress = "Office No 306, 3rd Floor, Excella Plazzo, Katraj-Navalle Bridge Road, Pune, Maharashtra";
-  const email = "ghspune555@gmail.com ";
-  const phone = "+91 8530487577"; 
+  const email = "ghspune555@gmail.com";
+  const phone = "+91 8530487577";
 
   const services = [
     { title: "Recruitment Services", description: "We specialize in identifying and recruiting top talent across various industries, ensuring the perfect match between candidates and organizations." },
@@ -190,112 +192,142 @@ useEffect(() => {
     <div className="font-sans text-slate-900 bg-white">
 
       {/* ================= Navbar ================= */}
-      <header className="sticky top-0 bg-white shadow-sm z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="font-extrabold text-2xl flex items-center gap-2">
-             <Briefcase className="text-blue-600" size={30} />
-            Get Hired Services<br/> <span className='text-sm font-normal text-slate-500 hidden sm:inline'>Pune</span>
-          </div>
-{/* Desktop Menu */}
-<nav className="hidden lg:flex gap-8 text-lg">
-  {['Home','Services','Process','Why Us','Contact'].map(i => (
-    <a key={i} href={`#${i.toLowerCase().replace(' ', '-')}`}>
-      {i}
-    </a>
-  ))}
-</nav>
-{/* mobile view */}
-<button
-  type="button"
-  className="lg:hidden z-50 relative cursor-pointer"
-  onClick={() => setMenuOpen(prev => !prev)}
->
-  <Menu size={28} />
-</button>
+{/* ================= Navbar ================= */}
+<header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+  <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
 
+    {/* Logo */}
+    <div className="flex items-center gap-2 font-extrabold text-xl sm:text-2xl">
+      <Briefcase className="text-blue-600" size={30} />
+      <span>
+        Get Hired Services
+        <span className="block text-xs font-normal text-slate-500">
+          Pune
+        </span>
+      </span>
+    </div>
 
-<a href="#register" className="hidden lg:block">
-  <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
-    Register Now
-  </button>
-</a>
+    {/* Desktop Menu */}
+    <nav className="hidden lg:flex gap-8 text-base font-medium text-slate-700">
+      {["Home", "Services", "Process", "Why Us", "Contact"].map(i => (
+        <a
+          key={i}
+          href={`#${i.toLowerCase().replace(" ", "-")}`}
+          className="relative hover:text-blue-600 transition
+                     after:absolute after:left-0 after:-bottom-1
+                     after:w-0 after:h-[2px] after:bg-blue-600
+                     hover:after:w-full after:transition-all"
+        >
+          {i}
+        </a>
+      ))}
+    </nav>
 
-        </div>
-      </header>
-{menuOpen && (
-  <div className="lg:hidden bg-white shadow-md px-6 py-6 space-y-4">
-    {['Home','Services','Process','Why Us','Contact'].map(i => (
-      <a
-        key={i}
-        href={`#${i.toLowerCase().replace(' ', '-')}`}
-        className="block text-lg"
-        onClick={() => setMenuOpen(false)}
-      >
-        {i}
-      </a>
-    ))}
-
-    {/* Mobile CTA */}
-    <a
-      href="#register"
-      onClick={() => setMenuOpen(false)}
-      className="block"
-    >
-      <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-xl font-semibold">
+    {/* Desktop CTA */}
+    <a href="#register" className="hidden lg:block">
+      <button className="bg-blue-600 text-white px-6 py-2 rounded-xl
+                         font-semibold shadow-md
+                         hover:bg-blue-700 hover:shadow-lg transition">
         Register Now
       </button>
     </a>
+
+    {/* Mobile Menu Button */}
+    <button
+      className="lg:hidden z-[60]"
+      onClick={() => setMenuOpen(prev => !prev)}
+    >
+      {menuOpen ? <X size={30} /> : <Menu size={30} />}
+    </button>
+  </div>
+</header>
+
+  {menuOpen && (
+  <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden">
+    <div className="absolute top-0 right-0 w-4/5 h-full bg-white shadow-2xl p-6 animate-slide-in">
+
+      <nav className="space-y-6 mt-10 text-lg font-semibold">
+        {["Home", "Services", "Process", "Why Us", "Contact"].map(i => (
+          <a
+            key={i}
+            href={`#${i.toLowerCase().replace(" ", "-")}`}
+            className="block text-slate-700 hover:text-blue-600 transition"
+            onClick={() => setMenuOpen(false)}
+          >
+            {i}
+          </a>
+        ))}
+      </nav>
+
+      <a href="#register" onClick={() => setMenuOpen(false)}>
+        <button className="w-full mt-10 bg-blue-600 text-white py-3 rounded-xl
+                           text-lg font-semibold shadow-md hover:bg-blue-700">
+          Register Now
+        </button>
+      </a>
+    </div>
   </div>
 )}
 
+
       {/* ================= Hero ================= */}
-      <section id="home" className="bg-gradient-to-br from-blue-50 to-yellow-50 py-20">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-6 items-center">
+      <section
+        id="home"
+        className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-yellow-50 py-24"
+      >
+        <FloatingElements />
+
+        <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-6 items-center">
           <div>
             <span className="inline-block bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-medium mb-4">Your Partner in Career Success</span>
-<h1 className="text-3xl sm:text-4xl lg:text-6xl">
+<h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
               Transform Your <span className="text-blue-600">Career Journey</span>
             </h1>
             <p className="mt-6 text-lg text-slate-600 max-w-lg">
               Connect with top organizations and unlock your career potential. We're dedicated to matching talented individuals with the right opportunities.
             </p>
-            <ul className="mt-6 space-y-3 text-lg font-medium">
-              {["Minimum 3 interviews guaranteed within 3 months","Registration fee: Just ₹499","Expert career guidance and placement assurance"].map(i => (
-                <li key={i} className="flex items-start gap-2">
-                  <CheckCircle className="text-blue-600 mt-1 flex-shrink-0" size={20}/> {i}
-                </li>
-              ))}
-            </ul>
+            <div className="mt-8 bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg max-w-lg">
+              <ul className="space-y-4 text-base sm:text-lg font-medium">
+                {["Minimum 3 interviews guaranteed within 3 months", "Registration fee: Just ₹499", "Expert career guidance and placement assurance"].map(i => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="text-blue-600 mt-1 flex-shrink-0" size={20} /> {i}
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div className="mt-10 flex gap-4">
-<a href="#register">
-  <button className="
-    bg-blue-600 text-white px-7 py-3 rounded-xl text-lg font-semibold
-    shadow-lg transition-all duration-300
-    hover:bg-blue-700 hover:shadow-2xl
-    hover:-translate-y-0.5 active:scale-95
-  ">
-    Get Started Today →
-  </button>
-</a>
+              <a href="#register">
+                <button className="
+  bg-gradient-to-r from-blue-600 to-blue-500 text-white
+  px-8 py-4 rounded-xl text-lg font-semibold
+  shadow-xl transition-all duration-300
+  hover:shadow-2xl hover:-translate-y-1
+  active:scale-95
+">
+
+                  Get Started Today →
+                </button>
+              </a>
 
               <button className="border border-blue-600 text-blue-600 px-7 py-3 rounded-xl text-lg font-semibold hover:bg-blue-50 transition duration-200">Learn More</button>
             </div>
           </div>
           <div className="bg-white rounded-3xl shadow-2xl p-4 relative">
-<img
-  src={assets.hero}
-  alt="A team celebrating success"
-  className="
+
+            <img
+              src={assets.hero}
+              alt="A team celebrating success"
+              className="
     rounded-2xl w-full h-auto
     transition-transform duration-500
     hover:scale-105
   "
-/>
-            <div className="absolute bottom-6 right-6 bg-white p-3 rounded-full shadow-lg flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                    <CheckCircle className="text-white" size={12}/>
-                </div>
-                <span className="text-green-600 font-bold">98% Success Rate</span>
+            />
+            <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-xl flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                <CheckCircle className="text-white" size={12} />
+              </div>
+              <span className="text-green-600 font-bold">98% Success Rate</span>
             </div>
           </div>
         </div>
@@ -308,10 +340,10 @@ useEffect(() => {
           <p className="text-center text-slate-600 mt-4 text-lg">We offer end-to-end recruitment solutions designed to empower individuals and organizations</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
             {services.map(s => (
-              <Card 
-                key={s.title} 
-                title={s.title} 
-                description={s.description} 
+              <Card
+                key={s.title}
+                title={s.title}
+                description={s.description}
                 icon={iconMap[s.title]}
               />
             ))}
@@ -319,495 +351,495 @@ useEffect(() => {
         </div>
       </section>
 
-            {/* ================= CTA - Secondary ================= */}
+      {/* ================= CTA - Secondary ================= */}
       <section className="max-w-7xl mx-auto my-20 px-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-3xl p-12 lg:p-16 text-center text-white shadow-2xl">
+        <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 hover:brightness-110 rounded-3xl p-12 lg:p-16 text-center text-white shadow-2xl">
           <h2 className="text-4xl font-bold">Ready to Take the Next Step?</h2>
           <p className="mt-4 text-xl">Join thousands of successful candidates who found their dream jobs through our services</p>
           <a href="#register" className="hidden lg:block">
-          <button className="mt-8 bg-white text-blue-600 px-10 py-3 rounded-xl text-lg font-semibold hover:bg-slate-50 transition duration-200">Register for Just ₹499</button>
+            <button className="mt-8 bg-white text-blue-600 px-10 py-3 rounded-xl text-lg font-semibold hover:bg-slate-50 transition duration-200">Register for Just ₹499</button>
           </a>
         </div>
       </section>
-            <section id="process" className="bg-white py-24">
-  <h2 className="text-4xl font-bold text-center">Our Placement Process</h2>
-  <p className="text-center text-slate-600 mt-4 text-lg">
-    A streamlined, proven process to help you land your dream job
-  </p>
+      <section id="process" className="bg-white py-24">
+        <h2 className="text-4xl font-bold text-center">Our Placement Process</h2>
+        <p className="text-center text-slate-600 mt-4 text-lg">
+          A streamlined, proven process to help you land your dream job
+        </p>
 
-  <div className="max-w-6xl mx-auto mt-16 px-6">
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-      {processSteps.map((step) => (
-        <div
-          key={step.title}
-          className="
+        <div className="max-w-6xl mx-auto mt-16 px-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            {processSteps.map((step) => (
+              <div
+                key={step.title}
+                className="
             relative bg-white rounded-3xl shadow-xl p-8 text-center
             border-t-8 border-blue-600/70
             transition-all duration-300
             hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02]
           "
-        >
-          {/* Step Number */}
-          <div className="
+              >
+                {/* Step Number */}
+                <div className="
             w-12 h-12 flex items-center justify-center
             rounded-full bg-blue-600 text-white font-bold text-xl
             absolute -top-6 left-1/2 -translate-x-1/2 shadow-lg
           ">
-            {step.num}
+                  {step.num}
+                </div>
+
+                {/* Icon */}
+                {React.createElement(step.icon, {
+                  size: 42,
+                  className:
+                    "text-blue-600 mx-auto mt-6 mb-4 transition-transform duration-300 hover:scale-110",
+                })}
+
+                {/* Content */}
+                <h3 className="text-xl font-extrabold">{step.title}</h3>
+                <p className="text-slate-600 text-sm mt-2">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+        {/* Registration Summary */}
+        <div className="max-w-4xl mx-auto mt-20 grid sm:grid-cols-3 gap-8 text-center px-6">
+          <div className="p-6 rounded-xl bg-blue-600/10">
+            <div className="text-4xl font-extrabold text-blue-600">3+</div>
+            <div className="text-lg font-semibold mt-2">Interview Guarantee</div>
+            <p className="text-sm text-slate-600">
+              Minimum interviews within 3 months
+            </p>
           </div>
 
-          {/* Icon */}
-          {React.createElement(step.icon, {
-            size: 42,
-            className:
-              "text-blue-600 mx-auto mt-6 mb-4 transition-transform duration-300 hover:scale-110",
-          })}
+          <div className="p-6 rounded-xl bg-blue-600/10">
+            <div className="text-4xl font-extrabold text-blue-600">₹499</div>
+            <div className="text-lg font-semibold mt-2">Registration Fee</div>
+            <p className="text-sm text-slate-600">
+              One-time affordable investment
+            </p>
+          </div>
 
-          {/* Content */}
-          <h3 className="text-xl font-extrabold">{step.title}</h3>
-          <p className="text-slate-600 text-sm mt-2">
-            {step.description}
-          </p>
+          <div className="p-6 rounded-xl bg-green-600/10">
+            <div className="text-4xl font-extrabold text-green-600">100%</div>
+            <div className="text-lg font-semibold mt-2">Dedicated Support</div>
+            <p className="text-sm text-slate-600">
+              Personalized guidance throughout
+            </p>
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
+      </section>
 
 
-  {/* Registration Summary */}
-  <div className="max-w-4xl mx-auto mt-20 grid sm:grid-cols-3 gap-8 text-center px-6">
-    <div className="p-6 rounded-xl bg-blue-600/10">
-      <div className="text-4xl font-extrabold text-blue-600">3+</div>
-      <div className="text-lg font-semibold mt-2">Interview Guarantee</div>
-      <p className="text-sm text-slate-600">
-        Minimum interviews within 3 months
-      </p>
-    </div>
-
-    <div className="p-6 rounded-xl bg-blue-600/10">
-      <div className="text-4xl font-extrabold text-blue-600">₹499</div>
-      <div className="text-lg font-semibold mt-2">Registration Fee</div>
-      <p className="text-sm text-slate-600">
-        One-time affordable investment
-      </p>
-    </div>
-
-    <div className="p-6 rounded-xl bg-green-600/10">
-      <div className="text-4xl font-extrabold text-green-600">100%</div>
-      <div className="text-lg font-semibold mt-2">Dedicated Support</div>
-      <p className="text-sm text-slate-600">
-        Personalized guidance throughout
-      </p>
-    </div>
-  </div>
-</section>
-
-      
       {/* ================= Why Us ================= */}
       <section id="why-us" className="py-24 bg-blue-50">
         <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center">Why Choose Get Hired Services?</h2>
-            <p className="text-center text-slate-600 mt-4 text-lg">We're committed to your success with unmatched expertise and dedication</p>
-            <div className="grid md:grid-cols-2 gap-8 mt-16">
+          <h2 className="text-4xl font-bold text-center">Why Choose Get Hired Services?</h2>
+          <p className="text-center text-slate-600 mt-4 text-lg">We're committed to your success with unmatched expertise and dedication</p>
+          <div className="grid md:grid-cols-2 gap-8 mt-16">
             {whyChoose.map(item => (
-                <div key={item.title} className="bg-white rounded-2xl shadow-xl p-8">
-                    <div className="flex items-start gap-4">
-                        <div className="bg-blue-600 text-white p-3 w-fit rounded-xl">
-                            {React.createElement(iconMap[item.title], { size: 30 })}
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                            <p className="text-slate-600 text-base">{item.description}</p>
-                            <div className="mt-3 font-extrabold text-blue-600 text-lg">{item.stats}</div>
-                        </div>
-                    </div>
+              <div key={item.title} className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="flex items-start gap-4">
+                  <div className="bg-blue-600 text-white p-3 w-fit rounded-xl">
+                    {React.createElement(iconMap[item.title], { size: 30 })}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                    <p className="text-slate-600 text-base">{item.description}</p>
+                    <div className="mt-3 font-extrabold text-blue-600 text-lg">{item.stats}</div>
+                  </div>
                 </div>
+              </div>
             ))}
-            </div>
+          </div>
         </div>
       </section>
 
       {/* ================= Mission & Metrics ================= */}
       <section className="bg-white py-24">
         <div className="bg-slate-900 text-white p-12 lg:p-20 rounded-3xl max-w-7xl mx-auto shadow-2xl px-6">
-            <h2 className="text-3xl font-bold text-center">Our Mission</h2>
-            <p className="text-center max-w-3xl mx-auto mt-6 text-lg text-slate-300">
-                To empower individuals and organizations through effective recruitment solutions, ensuring a perfect match between talent and opportunity. We believe in building long-term relationships and creating success stories that inspire.
-            </p>
-            <div className="grid sm:grid-cols-3 gap-8 mt-16 text-center">
-            {[['98%','Client Satisfaction'],['90%','Placement Success'],['85%','Return Clients']].map(i => (
-                <div key={i[1]} className='border-r border-slate-700 last:border-r-0'>
+          <h2 className="text-3xl font-bold text-center">Our Mission</h2>
+          <p className="text-center max-w-3xl mx-auto mt-6 text-lg text-slate-300">
+            To empower individuals and organizations through effective recruitment solutions, ensuring a perfect match between talent and opportunity. We believe in building long-term relationships and creating success stories that inspire.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-8 mt-16 text-center">
+            {[['98%', 'Client Satisfaction'], ['90%', 'Placement Success'], ['85%', 'Return Clients']].map(i => (
+              <div key={i[1]} className='border-r border-slate-700 last:border-r-0'>
                 <div className="text-5xl font-extrabold text-blue-400">{i[0]}</div>
                 <div className="text-lg mt-2 text-slate-300">{i[1]}</div>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         </div>
       </section>
 
 
-{/* ================= Registration CTA / Form (Enhanced) ================= */}
-<section
-  id="register"
-  className="relative py-16 md:py-24 bg-gradient-to-b from-blue-50 via-white to-blue-50 overflow-hidden"
->
-  {/* Decorative blobs */}
-  <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl" />
-  <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-200/40 rounded-full blur-3xl" />
-
-  <div className="relative max-w-6xl mx-auto px-6">
-    {/* Header */}
-    <div className="text-center max-w-2xl mx-auto">
-      <h2 className="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight">
-        Start Your Career Journey
-      </h2>
-      <p className="mt-4 text-slate-600 text-lg">
-        Register now for just <b>₹499</b> and unlock guaranteed interview opportunities
-      </p>
-    </div>
-
-    <div className="mt-16 grid lg:grid-cols-2 gap-12 items-start">
-      {/* ================= Benefits Column ================= */}
-      <div className="relative bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
-        <div className="absolute inset-0 rounded-3xl ring-1 ring-white/20" />
-        <h3 className="text-3xl font-extrabold mb-6">What You Get</h3>
-
-        <ul className="space-y-4">
-          {registrationBenefits.map((benefit) => (
-            <li key={benefit} className="flex items-start gap-3">
-              <CheckCircle className="text-white flex-shrink-0 mt-1" size={20} />
-              <span className="font-medium text-base">
-                {benefit.split(': ')[0]}
-                <br />
-                <span className="text-sm font-normal text-white/80">
-                  {benefit.split(': ')[1]}
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-10 pt-6 border-t border-white/30">
-          <div className="text-4xl font-extrabold">
-            ₹499 <span className="text-yellow-300 text-xl">One‑time</span>
-          </div>
-          <p className="text-sm mt-1 text-white/80">
-            No hidden charges • Secure payment
-          </p>
-        </div>
-      </div>
-
-      {/* ================= Registration Form Column ================= */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-3xl p-6 md:p-10 shadow-2xl border border-slate-100"
+      {/* ================= Registration CTA / Form (Enhanced) ================= */}
+      <section
+        id="register"
+        className="relative py-16 md:py-24 bg-gradient-to-b from-blue-50 via-white to-blue-50 overflow-hidden"
       >
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
-            <span>Details</span>
-            <span>Payment</span>
-            <span>Upload</span>
+        {/* Decorative blobs */}
+        <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-200/40 rounded-full blur-3xl" />
+
+        <div className="relative max-w-6xl mx-auto px-6">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight">
+              Start Your Career Journey
+            </h2>
+            <p className="mt-4 text-slate-600 text-lg">
+              Register now for just <b>₹499</b> and unlock guaranteed interview opportunities
+            </p>
           </div>
-          <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-600 transition-all"
-              style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
-            />
-          </div>
-        </div>
 
-        {/* ================= STEP 1 : DETAILS ================= */}
-        {step === 1 && (
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-  {/* Full Name */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Full Name *
-    </label>
-    <input
-      name="fullName"
-      placeholder="Enter your full name"
-      value={formData.fullName}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+          <div className="mt-16 grid lg:grid-cols-2 gap-12 items-start">
+            {/* ================= Benefits Column ================= */}
+            <div className="relative bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
+              <div className="absolute inset-0 rounded-3xl ring-1 ring-white/20" />
+              <h3 className="text-3xl font-extrabold mb-6">What You Get</h3>
 
-  {/* Email */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Email Address *
-    </label>
-    <input
-      type="email"
-      name="email"
-      placeholder="you@example.com"
-      value={formData.email}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+              <ul className="space-y-4">
+                {registrationBenefits.map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-3">
+                    <CheckCircle className="text-white flex-shrink-0 mt-1" size={20} />
+                    <span className="font-medium text-base">
+                      {benefit.split(': ')[0]}
+                      <br />
+                      <span className="text-sm font-normal text-white/80">
+                        {benefit.split(': ')[1]}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
 
-  {/* Phone */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Phone Number *
-    </label>
-    <input
-      name="phone"
-      placeholder="10-digit mobile number"
-      value={formData.phone}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+              <div className="mt-10 pt-6 border-t border-white/30">
+                <div className="text-4xl font-extrabold">
+                  ₹499 <span className="text-yellow-300 text-xl">One‑time</span>
+                </div>
+                <p className="text-sm mt-1 text-white/80">
+                  No hidden charges • Secure payment
+                </p>
+              </div>
+            </div>
 
-  {/* Qualification */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Highest Qualification *
-    </label>
-    <select
-      name="qualification"
-      value={formData.qualification}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    >
-      <option value="">Select qualification</option>
-      <option>High School</option>
-      <option>Diploma</option>
-      <option>Bachelor's Degree</option>
-      <option>Master's Degree</option>
-      <option>PhD</option>
-    </select>
-  </div>
+            {/* ================= Registration Form Column ================= */}
+            <form
+              onSubmit={handleSubmit}
+   className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-slate-100
+              shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)]"            >
+              {/* Progress Bar */}
+              <div className="mb-8">
+                <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+                  <span>Details</span>
+                  <span>Payment</span>
+                  <span>Upload</span>
+                </div>
+                <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-600 transition-all"
+                    style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
+                  />
+                </div>
+              </div>
 
-  {/* Experience */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Experience *
-    </label>
-    <select
-      name="experience"
-      value={formData.experience}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    >
-      <option value="">Select experience</option>
-      <option>Fresher</option>
-      <option>0-1 Years</option>
-      <option>1-3 Years</option>
-      <option>3-5 Years</option>
-      <option>5+ Years</option>
-    </select>
-  </div>
+              {/* ================= STEP 1 : DETAILS ================= */}
+              {step === 1 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Full Name */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Full Name *
+                    </label>
+                    <input
+                      name="fullName"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-  {/* Location */}
-  <div className="space-y-1">
-    <label className="text-sm font-semibold text-slate-700">
-      Location *
-    </label>
-    <input
-      name="location"
-      placeholder="City, State"
-      value={formData.location}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+                  {/* Email */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-  {/* Industry */}
-  <div className="space-y-1 md:col-span-2">
-    <label className="text-sm font-semibold text-slate-700">
-      Preferred Industry *
-    </label>
-    <input
-      name="industry"
-      placeholder="IT, Marketing, Finance, etc."
-      value={formData.industry}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+                  {/* Phone */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Phone Number *
+                    </label>
+                    <input
+                      name="phone"
+                      placeholder="10-digit mobile number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-  {/* CTA */}
-  <button
-    type="button"
-    onClick={() => setStep(2)}
-    className="md:col-span-2 mt-3 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg transition"
-  >
-    Continue to Payment →
-  </button>
-</div>
+                  {/* Qualification */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Highest Qualification *
+                    </label>
+                    <select
+                      name="qualification"
+                      value={formData.qualification}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    >
+                      <option value="">Select qualification</option>
+                      <option>High School</option>
+                      <option>Diploma</option>
+                      <option>Bachelor's Degree</option>
+                      <option>Master's Degree</option>
+                      <option>PhD</option>
+                    </select>
+                  </div>
 
-        )}
+                  {/* Experience */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Experience *
+                    </label>
+                    <select
+                      name="experience"
+                      value={formData.experience}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    >
+                      <option value="">Select experience</option>
+                      <option>Fresher</option>
+                      <option>0-1 Years</option>
+                      <option>1-3 Years</option>
+                      <option>3-5 Years</option>
+                      <option>5+ Years</option>
+                    </select>
+                  </div>
 
-        {/* ================= STEP 2 : PAYMENT ================= */}
-        {step === 2 && (
-          <div
-  ref={qrRef}
-  className="space-y-6 text-center bg-blue-50 border border-blue-200 rounded-3xl p-6 md:p-8"
->
-  {/* Title */}
-  <h3 className="text-2xl font-bold text-blue-700">
-    Scan & Pay <span className="text-blue-900">₹499</span>
-  </h3>
+                  {/* Location */}
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Location *
+                    </label>
+                    <input
+                      name="location"
+                      placeholder="City, State"
+                      value={formData.location}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-  <p className="text-sm text-slate-600">
-    Complete the payment using any UPI app
-  </p>
+                  {/* Industry */}
+                  <div className="space-y-1 md:col-span-2">
+                    <label className="text-sm font-semibold text-slate-700">
+                      Preferred Industry *
+                    </label>
+                    <input
+                      name="industry"
+                      placeholder="IT, Marketing, Finance, etc."
+                      value={formData.industry}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-  {/* QR Card */}
-  <div className="bg-white rounded-2xl shadow-md p-4 inline-block">
-    <img
-      src="/images/upi-qr.png"
-      alt="UPI QR Code"
-      className="w-44 h-44 rounded-xl mx-auto"
-    />
-  </div>
+                  {/* CTA */}
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="md:col-span-2 mt-3 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg transition"
+                  >
+                    Continue to Payment →
+                  </button>
+                </div>
 
-  {/* UPI Info */}
-  <div className="text-sm text-slate-700">
-    UPI ID:
-    <span className="ml-1 font-semibold text-slate-900">
-      gethired@upi
-    </span>
-  </div>
+              )}
 
-  <p className="text-xs text-slate-500">
-    Make sure the UPI ID is visible in your payment screenshot
-  </p>
+              {/* ================= STEP 2 : PAYMENT ================= */}
+              {step === 2 && (
+                <div
+                  ref={qrRef}
+                  className="space-y-6 text-center bg-blue-50 border border-blue-200 rounded-3xl p-6 md:p-8"
+                >
+                  {/* Title */}
+                  <h3 className="text-2xl font-bold text-blue-700">
+                    Scan & Pay <span className="text-blue-900">₹499</span>
+                  </h3>
 
-  {/* UPI Input */}
-  <div className="max-w-sm mx-auto">
-    <label className="block text-left text-sm font-semibold text-slate-700 mb-1">
-      Your UPI ID (used for payment) *
-    </label>
-    <input
-      name="upiId"
-      placeholder="yourupi@bank"
-      value={formData.upiId}
-      onChange={handleChange}
-      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      required
-    />
-  </div>
+                  <p className="text-sm text-slate-600">
+                    Complete the payment using any UPI app
+                  </p>
 
-  {/* Navigation Buttons */}
-  <div className="flex gap-4 pt-2">
-    <button
-      type="button"
-      onClick={() => setStep(1)}
-      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
-    >
-      ← Back
-    </button>
+                  {/* QR Card */}
+                  <div className="bg-white rounded-2xl shadow-md p-4 inline-block">
+                    <img
+                      src="/images/upi-qr.png"
+                      alt="UPI QR Code"
+                      className="w-44 h-44 rounded-xl mx-auto"
+                    />
+                  </div>
 
-    <button
-      type="button"
-      onClick={() => setStep(3)}
-      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
-    >
-      Next → Upload
-    </button>
-  </div>
-</div>
+                  {/* UPI Info */}
+                  <div className="text-sm text-slate-700">
+                    UPI ID:
+                    <span className="ml-1 font-semibold text-slate-900">
+                      hired12345@fbl
+                    </span>
+                  </div>
 
-        )}
+                  <p className="text-xs text-slate-500">
+                    Make sure the UPI ID is visible in your payment screenshot
+                  </p>
 
-        {/* ================= STEP 3 : UPLOAD ================= */}
-        {step === 3 && (
-         <div className="space-y-6">
-  {/* ===== Resume Upload ===== */}
-  <div className="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center hover:border-blue-500 transition">
-    <p className="font-semibold text-slate-700 mb-2">
-      📄 Upload Resume
-    </p>
-    <p className="text-xs text-slate-500 mb-4">
-      PDF, DOC or DOCX (max 2MB)
-    </p>
+                  {/* UPI Input */}
+                  <div className="max-w-sm mx-auto">
+                    <label className="block text-left text-sm font-semibold text-slate-700 mb-1">
+                      Your UPI ID (used for payment) *
+                    </label>
+                    <input
+                      name="upiId"
+                      placeholder="yourupi@bank"
+                      value={formData.upiId}
+                      onChange={handleChange}
+                      className="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                    />
+                  </div>
 
-    <input
-      type="file"
-      name="resume"
-      accept=".pdf,.doc,.docx"
-      onChange={(e) => setResume(e.target.files[0])}
-      className="w-full text-sm file:mr-4 file:py-2 file:px-4
+                  {/* Navigation Buttons */}
+                  <div className="flex gap-4 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
+                    >
+                      ← Back
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
+                    >
+                      Next → Upload
+                    </button>
+                  </div>
+                </div>
+
+              )}
+
+              {/* ================= STEP 3 : UPLOAD ================= */}
+              {step === 3 && (
+                <div className="space-y-6">
+                  {/* ===== Resume Upload ===== */}
+                  <div className="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center hover:border-blue-500 transition">
+                    <p className="font-semibold text-slate-700 mb-2">
+                      📄 Upload Resume
+                    </p>
+                    <p className="text-xs text-slate-500 mb-4">
+                      PDF, DOC or DOCX (max 2MB)
+                    </p>
+
+                    <input
+                      type="file"
+                      name="resume"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => setResume(e.target.files[0])}
+                      className="w-full text-sm file:mr-4 file:py-2 file:px-4
         file:rounded-xl file:border-0
         file:bg-blue-100 file:text-blue-700
         hover:file:bg-blue-200 cursor-pointer"
-      required
-    />
-  </div>
+                      required
+                    />
+                  </div>
 
-  {/* ===== Payment Screenshot Upload ===== */}
-  <div className="border-2 border-dashed border-green-200 rounded-2xl p-6 text-center hover:border-green-500 transition">
-    <p className="font-semibold text-slate-700 mb-2">
-      💸 Upload Payment Screenshot
-    </p>
-    <p className="text-xs text-slate-500 mb-4">
-      Must clearly show amount & UPI ID
-    </p>
+                  {/* ===== Payment Screenshot Upload ===== */}
+                  <div className="border-2 border-dashed border-green-200 rounded-2xl p-6 text-center hover:border-green-500 transition">
+                    <p className="font-semibold text-slate-700 mb-2">
+                      💸 Upload Payment Screenshot
+                    </p>
+                    <p className="text-xs text-slate-500 mb-4">
+                      Must clearly show amount & UPI ID
+                    </p>
 
-    <input
-      type="file"
-      name="paymentScreenshot"
-      accept="image/*"
-      onChange={(e) => setPaymentScreenshot(e.target.files[0])}
-      className="w-full text-sm file:mr-4 file:py-2 file:px-4
+                    <input
+                      type="file"
+                      name="paymentScreenshot"
+                      accept="image/*"
+                      onChange={(e) => setPaymentScreenshot(e.target.files[0])}
+                      className="w-full text-sm file:mr-4 file:py-2 file:px-4
         file:rounded-xl file:border-0
         file:bg-green-100 file:text-green-700
         hover:file:bg-green-200 cursor-pointer"
-      required
-    />
-  </div>
+                      required
+                    />
+                  </div>
 
-  {/* ===== Navigation Buttons ===== */}
-  <div className="flex gap-4 pt-2">
-    <button
-      type="button"
-      onClick={() => setStep(2)}
-      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
-    >
-      ← Back
-    </button>
+                  {/* ===== Navigation Buttons ===== */}
+                  <div className="flex gap-4 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="w-full border border-slate-300 hover:border-slate-400 py-3 rounded-xl font-medium transition"
+                    >
+                      ← Back
+                    </button>
 
-    <button
-      type="submit"
-      disabled={loading}
-      className={`w-full py-3 rounded-xl font-semibold text-white transition
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={`w-full py-3 rounded-xl font-semibold text-white transition
         ${loading
-          ? "bg-blue-400 cursor-not-allowed"
-          : "bg-blue-600 hover:bg-blue-700"
-        }`}
-    >
-      {loading ? "Submitting…" : "Submit Registration"}
-    </button>
-  </div>
-</div>
+                          ? "bg-blue-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                    >
+                      {loading ? "Submitting…" : "Submit Registration"}
+                    </button>
+                  </div>
+                </div>
 
-        )}
+              )}
 
-        {/* ================= SUCCESS ================= */}
-        {success && (
-          <div className="mt-6 text-center">
-            <div className="bg-green-100 border border-green-300 p-4 rounded-xl text-green-800 font-semibold">
-              ✅ Registration Successful
-            </div>
+              {/* ================= SUCCESS ================= */}
+              {success && (
+                <div className="mt-6 text-center">
+                  <div className="bg-green-100 border border-green-300 p-4 rounded-xl text-green-800 font-semibold">
+                    ✅ Registration Successful
+                  </div>
+                </div>
+              )}
+            </form>
           </div>
-        )}
-      </form>
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
 
 
@@ -819,179 +851,180 @@ useEffect(() => {
         <p className="text-center text-slate-600 mt-4 text-lg">Have questions? We're here to help you succeed</p>
 
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 mt-16 px-6 items-start">
-            <div className='space-y-6'>
-                {/* Office */}
-                <div className="flex items-start gap-4">
-                    <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
-                        <MapPin size={24}/>
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-xl mb-1">Our Office</h3>
-                        <p className="text-slate-600">{officeAddress}</p>
-                    </div>
-                </div>
-
-                {/* Phone */}
-                <div className="flex items-start gap-4">
-                    <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
-                        <Phone size={24}/>
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-xl mb-1">Phone</h3>
-                        <p className="text-slate-600 font-mono text-lg">{phone}</p>
-                        <p className="text-sm text-slate-500">Call us for immediate assistance</p>
-                    </div>
-                </div>
-
-                {/* Email */}
-                <div className="flex items-start gap-4">
-                    <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
-                        <Mail size={24}/>
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-xl mb-1">Email</h3>
-                        <p className="text-slate-600 font-mono text-lg">{email}</p>
-                        <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
-                    </div>
-                </div>
-
-                {/* Business Hours */}
-                <div className="flex items-start gap-4">
-                    <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
-                        <Clock size={24}/>
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-xl mb-1">Business Hours</h3>
-                        <p className="text-slate-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                        <p className="text-slate-600">Saturday: 10:00 AM - 4:00 PM</p>
-                        <p className="text-slate-600">Sunday: Closed</p>
-                    </div>
-                </div>
+          <div className='space-y-6'>
+            {/* Office */}
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
+                <MapPin size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl mb-1">Our Office</h3>
+                <p className="text-slate-600">{officeAddress}</p>
+              </div>
             </div>
 
-            {/* Map/Visit Us */}
-            <div className="bg-blue-50 rounded-3xl p-8 shadow-inner">
-                <h3 className='text-2xl font-bold mb-4'>Visit Us</h3>
-                {/* Map Image Placeholder */}
-              <div className="w-full h-72 rounded-xl overflow-hidden mb-4 shadow-md">
-  <iframe
-    title="Get Hired Services Location"
-    src="https://www.google.com/maps?q=Katraj-Navale%20Bridge,Pune&output=embed"
-    className="w-full h-full border-0"
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-  ></iframe>
-</div>
-<a
-  href="https://maps.app.goo.gl/yrxfh2kaeF9uCJky9"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-block mt-2 text-blue-600 font-semibold hover:underline"
->
-  📍 Open in Google Maps
-</a>
-
-                <p className="text-slate-600">
-                    Our office is conveniently located near Katraj-Navalle Bridge, easily accessible by public transport and with ample parking facilities available.
-                </p>
+            {/* Phone */}
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
+                <Phone size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl mb-1">Phone</h3>
+                <p className="text-slate-600 font-mono text-lg">{phone}</p>
+                <p className="text-sm text-slate-500">Call us for immediate assistance</p>
+              </div>
             </div>
+
+            {/* Email */}
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
+                <Mail size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl mb-1">Email</h3>
+                <p className="text-slate-600 font-mono text-lg">{email}</p>
+                <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
+              </div>
+            </div>
+
+            {/* Business Hours */}
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-600/10 text-blue-600 p-3 rounded-xl flex-shrink-0">
+                <Clock size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl mb-1">Business Hours</h3>
+                <p className="text-slate-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                <p className="text-slate-600">Saturday: 10:00 AM - 4:00 PM</p>
+                <p className="text-slate-600">Sunday: Closed</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Map/Visit Us */}
+          <div className="bg-blue-50 rounded-3xl p-8 shadow-inner">
+            <h3 className='text-2xl font-bold mb-4'>Visit Us</h3>
+            {/* Map Image Placeholder */}
+            <div className="w-full h-72 rounded-xl overflow-hidden mb-4 shadow-md">
+              <iframe
+                title="Get Hired Services Location"
+                src="https://www.google.com/maps?q=Katraj-Navale%20Bridge,Pune&output=embed"
+                className="w-full h-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/yrxfh2kaeF9uCJky9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-2 text-blue-600 font-semibold hover:underline"
+            >
+              📍 Open in Google Maps
+            </a>
+
+            <p className="text-slate-600">
+              Our office is conveniently located near Katraj-Navalle Bridge, easily accessible by public transport and with ample parking facilities available.
+            </p>
+          </div>
         </div>
       </section>
 
-{/* ================= Footer ================= */}
-<footer className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-slate-300">
-  <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
+      {/* ================= Footer ================= */}
+      <footer className="bg-slate-900
+ text-slate-300">
+        <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
 
-    {/* Brand & About */}
-    <div>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="bg-orange-500 p-3 rounded-xl">
-          <Briefcase className="text-white" size={26} />
-        </div>
-        <div>
-          <h3 className="text-xl font-bold text-white">Get Hired Services LLP</h3>
-          <p className="text-sm text-slate-400">Pune</p>
-        </div>
-      </div>
+          {/* Brand & About */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-orange-500 p-3 rounded-xl">
+                <Briefcase className="text-white" size={26} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Get Hired Services LLP</h3>
+                <p className="text-sm text-slate-400">Pune</p>
+              </div>
+            </div>
 
-      <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-        Your trusted partner in career success. We connect talented individuals
-        with top organizations and provide comprehensive recruitment solutions.
-      </p>
+            <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
+              Your trusted partner in career success. We connect talented individuals
+              with top organizations and provide comprehensive recruitment solutions.
+            </p>
 
-      {/* Social Icons */}
-      <div className="flex gap-4 mt-6">
-        {['facebook', 'twitter', 'linkedin'].map((i) => (
-          <div
-            key={i}
-            className="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center cursor-pointer transition"
-          >
-            <span className="text-white font-bold">
-              {i[0].toUpperCase()}
-            </span>
+            {/* Social Icons */}
+            <div className="flex gap-4 mt-6">
+              {['facebook', 'twitter', 'linkedin'].map((i) => (
+                <div
+                  key={i}
+                  className="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center cursor-pointer transition"
+                >
+                  <span className="text-white font-bold">
+                    {i[0].toUpperCase()}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
 
-    {/* Quick Links */}
-    <div>
-      <h4 className="text-white font-semibold text-lg mb-5">Quick Links</h4>
-      <ul className="space-y-3 text-sm">
-        {['Home', 'Services', 'Process', 'Why Us', 'Register'].map(link => (
-          <li key={link}>
-            <a
-              href={`#${link.toLowerCase().replace(' ', '-')}`}
-              className="hover:text-white transition"
-            >
-              {link}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-white font-semibold text-lg mb-5">Quick Links</h4>
+            <ul className="space-y-3 text-sm">
+              {['Home', 'Services', 'Process', 'Why Us', 'Register'].map(link => (
+                <li key={link}>
+                  <a
+                    href={`#${link.toLowerCase().replace(' ', '-')}`}
+                    className="hover:text-white transition"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-    {/* Contact Info */}
-    <div>
-      <h4 className="text-white font-semibold text-lg mb-5">Contact Info</h4>
+          {/* Contact Info */}
+          <div>
+            <h4 className="text-white font-semibold text-lg mb-5">Contact Info</h4>
 
-      <div className="space-y-4 text-sm">
-        <div className="flex items-start gap-3">
-          <MapPin className="text-orange-400 mt-1" size={18} />
-          <p>
-            Office No 306, 3rd Floor, Excella Plazzo,
-            Katraj-Navalle Bridge Road, Pune
-          </p>
+            <div className="space-y-4 text-sm">
+              <div className="flex items-start gap-3">
+                <MapPin className="text-orange-400 mt-1" size={18} />
+                <p>
+                  Office No 306, 3rd Floor, Excella Plazzo,
+                  Katraj-Navalle Bridge Road, Pune
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Phone className="text-orange-400" size={18} />
+                <p>+91 8530487577</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Mail className="text-orange-400" size={18} />
+                <p>ghspune555@gmail.com </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Phone className="text-orange-400" size={18} />
-          <p>+91 8530487577</p>
+        {/* Bottom Bar */}
+        <div className="border-t border-slate-700">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
+            <p>© 2025 Get Hired Services LLP. All rights reserved.</p>
+
+            <div className="flex gap-6">
+              <button className="hover:text-white transition">Privacy Policy</button>
+              <button className="hover:text-white transition">Terms of Service</button>
+              <button className="hover:text-white transition">Refund Policy</button>
+            </div>
+
+          </div>
         </div>
-
-        <div className="flex items-center gap-3">
-          <Mail className="text-orange-400" size={18} />
-          <p>ghspune555@gmail.com </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Bottom Bar */}
-  <div className="border-t border-slate-700">
-    <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
-      <p>© 2025 Get Hired Services LLP. All rights reserved.</p>
-
-     <div className="flex gap-6">
-  <button className="hover:text-white transition">Privacy Policy</button>
-  <button className="hover:text-white transition">Terms of Service</button>
-  <button className="hover:text-white transition">Refund Policy</button>
-</div>
-
-    </div>
-  </div>
-</footer>
+      </footer>
 
 
     </div>
