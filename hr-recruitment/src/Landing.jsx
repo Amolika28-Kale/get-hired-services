@@ -905,24 +905,25 @@ export default function Landing() {
           <div className="bg-blue-50 rounded-3xl p-8 shadow-inner">
             <h3 className='text-2xl font-bold mb-4'>Visit Us</h3>
             {/* Map Image Placeholder */}
-            <div className="w-full h-72 rounded-xl overflow-hidden mb-4 shadow-md">
-              <iframe
-                title="Get Hired Services Location"
-                src="https://www.google.com/maps?q=Katraj-Navale%20Bridge,Pune&output=embed"
-                className="w-full h-full border-0"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-            <a
-              href="https://maps.app.goo.gl/yrxfh2kaeF9uCJky9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-2 text-blue-600 font-semibold hover:underline"
-            >
-              📍 Open in Google Maps
-            </a>
+        <div className="w-full h-72 rounded-xl overflow-hidden mb-4 shadow-md">
+  <iframe
+    title="Get Hired Services Location"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3784.7805456397626!2d73.8290176!3d18.4569359!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc295a25e771889%3A0xf94504177ee4eaf5!2sGHS%20-%20GET%20HIRED%20SERVICES%20LLP!5e0!3m2!1sen!2sin!4v1733840000000"
+    className="w-full h-full border-0"
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
+</div>
+<a
+  href="https://maps.app.goo.gl/yrxfh2kaeF9uCJky9"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block mt-2 text-blue-600 font-semibold hover:underline"
+>
+  📍 Open in Google Maps
+</a>
+
 
             <p className="text-slate-600">
               Our office is conveniently located near Katraj-Navalle Bridge, easily accessible by public transport and with ample parking facilities available.
